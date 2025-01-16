@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jobs4us/pages/admin_dashboard_page.dart';
 import 'package:jobs4us/pages/admin_login_page.dart';
 import 'package:jobs4us/pages/create_admin_profile_page.dart';
 import 'package:jobs4us/pages/create_profile_page.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/createAdminProfile': (context) => CreateAdminProfilePage(),
         '/createProfile': (context) => CreateProfilePage(isAdmin: false),
         '/minimart': (context) => MinimartPage(),
-        '/userManagement': (context) => UserManagementPage(),
+        '/adminDashboard': (context) => AdminDashboardPage(),
       },
     );
   }

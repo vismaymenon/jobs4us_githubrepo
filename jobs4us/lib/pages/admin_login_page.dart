@@ -105,7 +105,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         SnackBar(content: Text('Login successful for ${userCredential.user?.phoneNumber}')),
       );
       
-      Navigator.pushReplacementNamed(context, '/userManagement');
+      Navigator.pushReplacementNamed(context, '/adminDashboard');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error confirming OTP: $e')),

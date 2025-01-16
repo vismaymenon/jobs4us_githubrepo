@@ -41,7 +41,6 @@ class _VoucherTasksPageState extends State<VoucherTasksPage> {
         title: Text('Voucher Tasks'),
         backgroundColor: Color(0xFF002856), // Dark Blue
         foregroundColor: Colors.white, // White text color
-        automaticallyImplyLeading: false,
       ),
       body: tasks.isEmpty
           ? Center(
