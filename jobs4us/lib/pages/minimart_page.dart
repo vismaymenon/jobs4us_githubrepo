@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jobs4us/data/sample_product.dart';
 import 'package:jobs4us/pages/product_page.dart';
 import 'package:jobs4us/pages/resident_profile_page.dart';
-import 'package:jobs4us/pages/voucher_tasks_page.dart';  // Import VoucherTasksPage
+import 'package:jobs4us/pages/voucher_tab_page.dart';  // Import VoucherTasksPage
 
 class MinimartPage extends StatefulWidget {
   @override
@@ -156,7 +156,7 @@ class _MinimartPageState extends State<MinimartPage> {
                 )
               ],
             )
-          : VoucherTasksPage(),  // Changed to VoucherTasksPage
+          : VoucherTabPage(),  // Changed to VoucherTasksPage
     );
   }
 
