@@ -9,6 +9,8 @@ import 'package:jobs4us/pages/create_resident_profile_page.dart';
 import 'package:jobs4us/pages/resident_login_page.dart';
 import 'package:jobs4us/pages/resident_profile_page.dart';
 import 'package:jobs4us/pages/user_management_page.dart';
+import 'package:jobs4us/providers/cart_provider.dart';
+import 'package:provider/provider.dart';
 import 'models/cart_item.dart';
 import 'pages/login_page.dart';
 import 'pages/minimart_page.dart';
@@ -36,20 +38,23 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jobs4U',
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => LoginPage(isAdmin: false),
-        '/residentProfile': (context) => ResidentProfilePage(),
-        '/residentLogin': (context) => ResidentLoginPage(),
-        '/createResidentProfile': (context) => CreateResidentProfilePage(), 
-        '/adminLogin': (context) => AdminLoginPage(),
-        '/createAdminProfile': (context) => CreateAdminProfilePage(),
-        '/createProfile': (context) => CreateProfilePage(isAdmin: false),
-        '/minimart': (context) => MinimartPage(),
-        '/adminDashboard': (context) => AdminDashboardPage(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => CartProvider(),
+      child: MaterialApp(
+        title: 'Jobs4U',
+        initialRoute: '/login',
+        routes: {
+          '/login': (context) => LoginPage(isAdmin: false),
+          '/residentProfile': (context) => ResidentProfilePage(),
+          '/residentLogin': (context) => ResidentLoginPage(),
+          '/createResidentProfile': (context) => CreateResidentProfilePage(), 
+          '/adminLogin': (context) => AdminLoginPage(),
+          '/createAdminProfile': (context) => CreateAdminProfilePage(),
+          '/createProfile': (context) => CreateProfilePage(isAdmin: false),
+          '/minimart': (context) => MinimartPage(),
+          '/adminDashboard': (context) => AdminDashboardPage(),
+        },
+      ),
     );
   }
 }

@@ -6,10 +6,11 @@ class CartProvider with ChangeNotifier {
 
   List<CartItem> get cartItems => _cartItems;
 
-  int get totalQuantity =>
-      _cartItems.fold(0, (sum, item) => sum + item.quantity);
+  // get  total quantity of items in cart
+  int get totalQuantity => _cartItems.fold(0, (sum, item) => sum + item.quantity);
 
-  void addToCart(CartItem cartItem) {
+  // add item to cart
+  void addItem(CartItem cartItem) {
     final existingItem = _cartItems.firstWhere(
       (item) => item.product.id == cartItem.product.id,
       orElse: () => CartItem(product: cartItem.product, quantity: 0),
@@ -24,8 +25,52 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeFromCart(CartItem cartItem) {
+  // remove item from  cart
+  void removeItem(CartItem cartItem) {
     _cartItems.remove(cartItem);
+    notifyListeners();
+  }
+
+  // increment the quantity of a cart item
+  void incrementQuantity(CartItem cartItem) {
+    final existingItem = _cartItems.firstWhere(
+      (item) => item.product.id == cartItem.product.id,
+      orElse: () => CartItem(product: cartItem.product, quantity: 0),
+    );
+
+    if (existingItem.quantity > 0) {
+      existingItem.quantity++;
+      notifyListeners();
+    }
+  }
+
+  // decrement the quantity of a cart item
+  void decrementQuantity(CartItem cartItem) {
+    final existingItem = _cartItems.firstWhere(
+      (item) => item.product.id == cartItem.product.id,
+      orElse: () => CartItem(product: cartItem.product, quantity: 0),
+    );
+
+    if (existingItem.quantity > 1) {
+      existingItem.quantity--;
+    } else {
+      _cartItems.remove(existingItem);
+    }
+
+    notifyListeners();
+  }
+
+  // calculate grand total
+  double calculateTotal() {
+    return _cartItems.fold(
+      0,
+      (sum, item) => sum + (item.product.price * item.quantity),
+    );
+  }
+
+  // clear all items from cart
+  void clearCart() {
+    _cartItems.clear();
     notifyListeners();
   }
 }

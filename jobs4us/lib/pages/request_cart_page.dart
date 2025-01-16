@@ -1,59 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import '../models/cart_item.dart';
+import '../providers/cart_provider.dart'; 
 
-class RequestCartPage extends StatefulWidget {
-  final List<CartItem> cartItems;
-
-  const RequestCartPage({Key? key, required this.cartItems}) : super(key: key);
-
-  @override
-  _RequestCartPageState createState() => _RequestCartPageState();
-}
-
-class _RequestCartPageState extends State<RequestCartPage> {
-  int _selectedTabIndex = 0;
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedTabIndex = index;
-    });
-  }
-
-  void incrementQuantity(CartItem item) {
-    setState(() {
-      item.quantity++;
-    });
-  }
-
-  void decrementQuantity(CartItem item) {
-    setState(() {
-      if (item.quantity > 1) {
-        item.quantity--;
-      }
-    });
-  }
-
-  void removeItem(CartItem item) {
-    setState(() {
-      widget.cartItems.remove(item);
-    });
-  }
-
-  double calculateTotal() {
-    return widget.cartItems.fold(0, (sum, item) => sum + item.totalPrice);
-  }
-
+class RequestCartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return Scaffold(
-      // appBar: HeaderBanner(
-      //   selectedTabIndex: _selectedTabIndex,
-      //   onTabSelected: _onTabSelected,
-      // ),
       appBar: AppBar(
         title: const Text('Request Cart'),
       ),
-      body: widget.cartItems.isEmpty
+      body: cartProvider.cartItems.isEmpty
           ? const Center(
               child: Text(
                 'Your cart is empty',
@@ -62,13 +21,12 @@ class _RequestCartPageState extends State<RequestCartPage> {
             )
           : Column(
               children: [
-                // Column Headers
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
                     children: const [
                       Expanded(
-                        flex: 3, // Matches the flex of the Product column
+                        flex: 3,
                         child: Text(
                           'Product',
                           style: TextStyle(
@@ -78,7 +36,7 @@ class _RequestCartPageState extends State<RequestCartPage> {
                         ),
                       ),
                       Expanded(
-                        flex: 2, // Matches the flex of the Quantity column
+                        flex: 2,
                         child: Center(
                           child: Text(
                             'Quantity',
@@ -90,10 +48,10 @@ class _RequestCartPageState extends State<RequestCartPage> {
                         ),
                       ),
                       Expanded(
-                        flex: 2, // Matches the flex of the Total column
+                        flex: 2, 
                         child: Text(
                           'Total',
-                          textAlign: TextAlign.right, // Aligns with totals in the rows
+                          textAlign: TextAlign.right, 
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -103,17 +61,16 @@ class _RequestCartPageState extends State<RequestCartPage> {
                     ],
                   ),
                 ),
-                // List of Cart Items
                 Expanded(
                   child: ListView.builder(
-                    itemCount: widget.cartItems.length,
+                    itemCount: cartProvider.cartItems.length,
                     itemBuilder: (context, index) {
-                      final cartItem = widget.cartItems[index];
+                      final cartItem = cartProvider.cartItems[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Material(
-                          elevation: 2, // Lift effect
-                          borderRadius: BorderRadius.circular(12), // Rounded corners
+                          elevation: 2, 
+                          borderRadius: BorderRadius.circular(12), 
                           child: Container(
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
@@ -122,8 +79,7 @@ class _RequestCartPageState extends State<RequestCartPage> {
                             ),
                             child: Row(
                               children: [
-                                // Product Image and Details
-                                Expanded(
+                                Expanded( // pdt image + details
                                   flex: 3,
                                   child: Row(
                                     children: [
@@ -160,15 +116,14 @@ class _RequestCartPageState extends State<RequestCartPage> {
                                     ],
                                   ),
                                 ),
-                                // Quantity Controls
-                                Expanded(
+                                Expanded( // quantity controls
                                   flex: 2,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       IconButton(
                                         icon: const Icon(Icons.remove),
-                                        onPressed: () => decrementQuantity(cartItem),
+                                        onPressed: () => cartProvider.decrementQuantity(cartItem),
                                       ),
                                       Text(
                                         '${cartItem.quantity}',
@@ -179,13 +134,12 @@ class _RequestCartPageState extends State<RequestCartPage> {
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.add),
-                                        onPressed: () => incrementQuantity(cartItem),
+                                        onPressed: () => cartProvider.incrementQuantity(cartItem),
                                       ),
                                     ],
                                   ),
                                 ),
-                                // Total and Remove Button
-                                Expanded(
+                                Expanded( // total + trashbin button
                                   flex: 2,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -201,7 +155,7 @@ class _RequestCartPageState extends State<RequestCartPage> {
                                       const SizedBox(width: 12),
                                       IconButton(
                                         icon: const Icon(Icons.delete, color: Colors.red),
-                                        onPressed: () => removeItem(cartItem),
+                                        onPressed: () => cartProvider.removeItem(cartItem),
                                       ),
                                     ],
                                   ),
@@ -214,14 +168,13 @@ class _RequestCartPageState extends State<RequestCartPage> {
                     },
                   ),
                 ),
-                // Grand Total and Submit Button
-                Padding(
+                Padding( // grand total + submit
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Grand Total: \$${calculateTotal().toStringAsFixed(2)}',
+                        'Grand Total: \$${cartProvider.calculateTotal().toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -236,10 +189,8 @@ class _RequestCartPageState extends State<RequestCartPage> {
                               content: Text('Request submitted successfully!'),
                             ),
                           );
-                          setState(() {
-                            widget.cartItems.clear();
-                          });
-                          Navigator.pop(context); // Return to previous page
+                          cartProvider.clearCart();
+                          Navigator.pop(context); // go back to prev page
                         },
                         child: const Text('Submit Request'),
                       ),
@@ -251,4 +202,3 @@ class _RequestCartPageState extends State<RequestCartPage> {
     );
   }
 }
-

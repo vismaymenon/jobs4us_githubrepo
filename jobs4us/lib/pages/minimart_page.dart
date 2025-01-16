@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jobs4us/data/sample_product.dart';
-import 'package:jobs4us/pages/product_page.dart';
+import 'package:jobs4us/models/product.dart';
 import 'package:jobs4us/pages/resident_profile_page.dart';
-import 'package:jobs4us/pages/voucher_tab_page.dart';  // Import VoucherTasksPage
+import 'package:jobs4us/pages/request_cart_page.dart';
+import 'package:jobs4us/pages/product_page.dart';
+import 'package:jobs4us/pages/voucher_tab_page.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
 
 class MinimartPage extends StatefulWidget {
   @override
@@ -22,13 +26,66 @@ class _MinimartPageState extends State<MinimartPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProductPage(product: sampleProduct, cartItems: []),
+        builder: (context) => ProductPage(product: sampleProduct),
       ),
     );
   }
 
+  Widget _bodyContent() {
+    if (_selectedTabIndex == 0) {
+      // Minimart content
+      return Column(
+        children: [
+          const SizedBox(height: 20),
+          const Text(
+            'Welcome to MWH Minimart!',
+            style: TextStyle(fontSize: 28),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: _items.length,
+              itemBuilder: (context, index) {
+                final item = _items[index];
+                return GestureDetector(
+                  onTap: () => _navigateToProductPage(context),
+                  child: Column(
+                    children: [
+                      Image.asset(item['image']!, width: 190, height: 190),
+                      const SizedBox(height: 12),
+                      Text(
+                        item['title']!,
+                        style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        item['price']!,
+                        style: const TextStyle(fontSize: 16, color: Color(0xFFD31B22)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    } else {
+      return VoucherTabPage();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -41,13 +98,13 @@ class _MinimartPageState extends State<MinimartPage> {
                   width: 110,
                   height: 110,
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () => _onTabSelected(0),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     decoration: _selectedTabIndex == 0
-                        ? BoxDecoration(
+                        ? const BoxDecoration(
                             border: Border(
                               bottom: BorderSide(color: Color(0xFFD31B22), width: 3),
                             ),
@@ -56,21 +113,19 @@ class _MinimartPageState extends State<MinimartPage> {
                     child: Text(
                       'Minimart',
                       style: TextStyle(
-                        color: _selectedTabIndex == 0
-                            ? Colors.white
-                            : Colors.white70,
+                        color: _selectedTabIndex == 0 ? Colors.white : Colors.white70,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 GestureDetector(
                   onTap: () => _onTabSelected(1),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     decoration: _selectedTabIndex == 1
-                        ? BoxDecoration(
+                        ? const BoxDecoration(
                             border: Border(
                               bottom: BorderSide(color: Color(0xFFD31B22), width: 3),
                             ),
@@ -79,9 +134,7 @@ class _MinimartPageState extends State<MinimartPage> {
                     child: Text(
                       'Vouchers',
                       style: TextStyle(
-                        color: _selectedTabIndex == 1
-                            ? Colors.white
-                            : Colors.white70,
+                        color: _selectedTabIndex == 1 ? Colors.white : Colors.white70,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -93,70 +146,58 @@ class _MinimartPageState extends State<MinimartPage> {
               children: [
                 IconButton(
                   onPressed: () {
-                    // Navigate to the ResidentProfilePage
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ResidentProfilePage()),
+                      MaterialPageRoute(
+                        builder: (context) => ResidentProfilePage(),
+                      ),
                     );
                   },
-                  icon: Icon(Icons.account_circle, color: Colors.white),
+                  icon: const Icon(Icons.person, color: Colors.white),
+                ),
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestCartPage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                    ),
+                    if (cartProvider.totalQuantity > 0)
+                      Positioned(
+                        right: 2,
+                        top: 2,
+                        child: Container(
+                          padding: const EdgeInsets.all(4.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${cartProvider.totalQuantity}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
           ],
         ),
-        backgroundColor: Color(0xFF002856),
+        backgroundColor: const Color(0xFF002856),
       ),
-      body: _selectedTabIndex == 0
-          ? Column(
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  'Welcome to MWH Minimart!',
-                  style: TextStyle(fontSize: 28),
-                ),
-                SizedBox(height: 20),
-                Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, 
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16, 
-                    ),
-                    itemCount: _items.length,
-                    itemBuilder: (context, index) {
-                      final item = _items[index];
-                      return GestureDetector(
-                        onTap: () => _navigateToProductPage(context),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              item['image']!,
-                              width: 190,
-                              height: 190,
-                            ),
-                            SizedBox(height: 12),
-                            Text(
-                              item['title']!,
-                              style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              item['price']!,
-                              style: TextStyle(fontSize: 16, color: Color(0xFFD31B22)),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            )
-          : VoucherTabPage(),  // Changed to VoucherTasksPage
+      body: _bodyContent(),
     );
   }
 

@@ -16,42 +16,34 @@ class _VoucherTabPageState extends State<VoucherTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Voucher Tasks'),
-        backgroundColor: Color(0xFF002856), // Dark Blue
-        foregroundColor: Colors.white, // White text color
-        automaticallyImplyLeading: false,
-      ),
-      body: tasks.isEmpty
-          ? Center(
-              child: Text(
-                'No tasks available.',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                final task = tasks[index];
-                return Card(
-                  elevation: 4,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Text(
-                        task["description"][0].toUpperCase(),
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Color(0xFF002856),
-                    ),
-                    title: Text('Task Number: ${task["taskNumber"]}'),
-                    subtitle: Text('Description: ${task["description"]}'),
-                  ),
-                );
-              },
+    return tasks.isEmpty
+        ? Center(
+            child: Text(
+              'No tasks available.',
+              style: TextStyle(fontSize: 18),
             ),
-    );
+          )
+        : ListView.builder(
+            padding: EdgeInsets.all(16),
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index];
+              return Card(
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    child: Text(
+                      task["description"][0].toUpperCase(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Color(0xFF002856),
+                  ),
+                  title: Text('Task Number: ${task["taskNumber"]}'),
+                  subtitle: Text('Description: ${task["description"]}'),
+                ),
+              );
+            },
+          );
   }
 }
