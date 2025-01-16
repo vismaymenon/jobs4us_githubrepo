@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jobs4us/data/sample_product.dart';
 import 'package:jobs4us/pages/product_page.dart';
 import 'package:jobs4us/pages/resident_profile_page.dart';
+import 'package:jobs4us/pages/voucher_tasks_page.dart';  // Import VoucherTasksPage
 
 class MinimartPage extends StatefulWidget {
   @override
@@ -106,58 +107,56 @@ class _MinimartPageState extends State<MinimartPage> {
         ),
         backgroundColor: Color(0xFF002856),
       ),
-      body: Center(
-        child: _selectedTabIndex == 0
-            ? Column(
-                children: [
-                  SizedBox(height: 20),
-                  Text(
-                    'Welcome to MWH Minimart!',
-                    style: TextStyle(fontSize: 28),
-                  ),
-                  SizedBox(height: 20),
-                  Expanded(
-                    child: GridView.builder(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, 
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16, 
-                      ),
-                      itemCount: _items.length,
-                      itemBuilder: (context, index) {
-                        final item = _items[index];
-                        return GestureDetector(
-                          onTap: () => _navigateToProductPage(context),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                item['image']!,
-                                width: 190,
-                                height: 190,
-                              ),
-                              SizedBox(height: 12),
-                              Text(
-                                item['title']!,
-                                style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                item['price']!,
-                                style: TextStyle(fontSize: 16, color: Color(0xFFD31B22)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+      body: _selectedTabIndex == 0
+          ? Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  'Welcome to MWH Minimart!',
+                  style: TextStyle(fontSize: 28),
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, 
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16, 
                     ),
-                  )
-                ],
-              )
-            : Text('Check out our Vouchers!', style: TextStyle(fontSize: 24)),
-      ),
+                    itemCount: _items.length,
+                    itemBuilder: (context, index) {
+                      final item = _items[index];
+                      return GestureDetector(
+                        onTap: () => _navigateToProductPage(context),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              item['image']!,
+                              width: 190,
+                              height: 190,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              item['title']!,
+                              style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              item['price']!,
+                              style: TextStyle(fontSize: 16, color: Color(0xFFD31B22)),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            )
+          : VoucherTasksPage(),  // Changed to VoucherTasksPage
     );
   }
 
