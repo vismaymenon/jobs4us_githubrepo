@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => CartProvider(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false, // Disable the debug ribbon
         title: 'Jobs4U',
         initialRoute: '/login',
         routes: {
